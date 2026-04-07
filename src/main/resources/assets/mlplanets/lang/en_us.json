@@ -1,0 +1,28 @@
+{
+  "item.mlplanets.martian_dust": "Marsdust",
+
+  "block.mlplanets.regolith": "Regolith",
+  "block.mlplanets.chondrite": "Chondrite",
+  "block.mlplanets.martian_regolith": "Martian Regolith",
+  "block.mlplanets.mars_rock": "Marsrock",
+  "block.mlplanets.martian_bedrock": "Martian Bedrock",
+  "block.mlplanets.venusian_olivine": "Venusian Olivine",
+  "block.mlplanets.venusian_toprock": "Venusian Toprock",
+  "block.mlplanets.venusian_obsidian": "Venusian Obsidian",
+  "block.mlplanets.sulfuric_cloud": "Sulfuric Cloud",
+  "block.mlplanets.mercurian_pyroxene": "Mercurian Pyroxene",
+  "block.mlplanets.graphite_ore": "Graphite Ore",
+  "block.mlplanets.sulfurous_hoarfrost": "Sulfurous Hoarfrost",
+  "block.mlplanets.pyrite_ore": "Pyrite Ore",
+  "block.mlplanets.ionian_foyada": "Ionian Foyada",
+  "block.mlplanets.stellar_ice": "Stellar Ice",
+  "block.mlplanets.mineral_vent": "Mineral Vent",
+  "block.mlplanets.dark_regolith": "Dark Regolith",
+  "block.mlplanets.light_regolith": "Light Regolith",
+  "block.mlplanets.meteorite_ore": "Meteorite Ore",
+  "block.mlplanets.titan_topsoil": "Titan Topsoil",
+  "block.mlplanets.neptunian_cloud": "Neptunian Cloud",
+  "block.mlplanets.nitrogen_snow": "Nitrogen Snow",
+  "block.mlplanets.thiolin_ore": "Thiolin Ore",
+  "block.mlplanets.nitrogen_ice": "Nitrogen Ice"
+}
