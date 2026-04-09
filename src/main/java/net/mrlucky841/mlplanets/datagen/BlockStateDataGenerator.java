@@ -42,7 +42,7 @@ public class BlockStateDataGenerator extends BlockStateProvider {
 
         blockWithItem(ModBlocks.TITAN_TOPSOIL);
         blockWithItem(ModBlocks.LIGHT_REGOLITH);
-        blockWithItem(ModBlocks.NEPTUNIAN_CLOUD);   //TODO, get actual cobweb model
+        blockWithItem(ModBlocks.NEPTUNIAN_CLOUD);
         blockWithItem(ModBlocks.NITROGEN_SNOW);
         blockWithItem(ModBlocks.NITROGEN_ICE);
         blockWithItem(ModBlocks.THIOLIN_ORE);
@@ -51,9 +51,6 @@ public class BlockStateDataGenerator extends BlockStateProvider {
     private void blockWithItem(RegistryObject<Block> blockRegistryObject) {
         simpleBlockWithItem(blockRegistryObject.get(), cubeAll(blockRegistryObject.get()));
     }
-    //private void cobwebWithItem(RegistryObject<Block> blockRegistryObject) {
-    //    simpleBlockItem(blockRegistryObject.get(), models().withExistingParent(MLPlanets.MODID,"cross"));
-    //}
 
     //private void layerBlockWithItem(RegistryObject<Block> blockRegistryObject) {
     //    simpleBlockItem(blockRegistryObject.get(), );

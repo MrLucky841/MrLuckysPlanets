@@ -28,11 +28,17 @@ public class RecipeDataProvider extends RecipeProvider implements IConditionBuil
         //oreBlasting(pWriter, SAPPHIRE_SMELTABLES, RecipeCategory.MISC, ModItems.SAPPHIRE.get(), 0.25f, 100, "sapphire");
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.MARTIAN_REGOLITH.get())
-                .pattern("SSS")
-                .pattern("SSS")
-                .pattern("SSS")
+                .pattern("SS")
+                .pattern("SS")
                 .define('S', ModItems.MARTIAN_DUST.get())
                 .unlockedBy(getHasName(ModItems.MARTIAN_DUST.get()), has(ModItems.MARTIAN_DUST.get()))
+                .save(pWriter);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.NITROGEN_SNOW.get())
+                .pattern("SS")
+                .pattern("SS")
+                .define('S', ModItems.NITROGEN_SNOWBALL.get())
+                .unlockedBy(getHasName(ModItems.NITROGEN_SNOWBALL.get()), has(ModItems.NITROGEN_SNOWBALL.get()))
                 .save(pWriter);
 
         //ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SAPPHIRE.get(), 9)

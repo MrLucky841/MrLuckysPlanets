@@ -18,6 +18,13 @@ public class CreativeModTab {
                     .title(Component.translatable("MrLucky's Planets"))
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.MARTIAN_DUST.get());
+                        pOutput.accept(ModItems.GRAPHITE.get());
+                        pOutput.accept(ModItems.STELLAR_ICE_CUBES.get());
+                        pOutput.accept(ModItems.RAW_THIOLIN.get());
+                        pOutput.accept(ModItems.NITROGEN_SNOWBALL.get());
+                        pOutput.accept(ModItems.SULFUR.get());
+                        pOutput.accept(ModItems.RAW_PYRITE.get());
+                        pOutput.accept(ModItems.PYRITE.get());
 
                         pOutput.accept(ModBlocks.REGOLITH.get());
                         pOutput.accept(ModBlocks.CHONDRITE.get());

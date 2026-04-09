@@ -6,13 +6,21 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.mrlucky841.mlplanets.block.ModBlocks;
 import net.minecraftforge.registries.RegistryObject;
+import net.mrlucky841.mlplanets.block.ModItems;
 
 import java.util.Set;
 
@@ -25,49 +33,37 @@ public class BlockLootTableGenerator extends BlockLootSubProvider {
     protected void generate() {
         this.dropSelf(ModBlocks.REGOLITH.get());
         this.dropSelf(ModBlocks.CHONDRITE.get());
-        this.dropSelf(ModBlocks.MARTIAN_REGOLITH.get());
+        this.dropOther(ModBlocks.MARTIAN_REGOLITH.get(), ModItems.MARTIAN_DUST.get());  //TODO: drop multiple dusts?
         this.dropSelf(ModBlocks.MARS_ROCK.get());
         this.dropSelf(ModBlocks.MARS_BEDROCK.get());
 
         this.dropSelf(ModBlocks.VENUSIAN_OLIVINE.get());
         this.dropSelf(ModBlocks.VENUSIAN_TOPROCK.get());
         this.dropSelf(ModBlocks.VENUSIAN_OBSIDIAN.get());
-        this.dropSelf(ModBlocks.SULFURIC_CLOUD.get());          //TODO: make this into a proper gas <<<
 
         this.dropSelf(ModBlocks.MERCURIAN_PYROXENE.get());
-        this.dropSelf(ModBlocks.GRAPHITE_ORE.get());            //TODO: make these unique (add graphite)
-        this.dropSelf(ModBlocks.SULFUROUS_HOARFROST.get());     //Add sulfur
-        this.dropSelf(ModBlocks.PYRITE_ORE.get());              //Add pyrite ore items
+        this.createOreDrop(ModBlocks.GRAPHITE_ORE.get(), ModItems.GRAPHITE.get());
+        this.dropOther(ModBlocks.SULFUROUS_HOARFROST.get(), ModItems.SULFUR.get());
+        this.createOreDrop(ModBlocks.PYRITE_ORE.get(), ModItems.RAW_PYRITE.get());
         this.dropSelf(ModBlocks.IONIAN_FOYADA.get());
 
-        this.dropSelf(ModBlocks.STELLAR_ICE.get());             //add ice cubes
-        this.dropSelf(ModBlocks.MINERAL_VENT.get());            //drop cobblestone?
+        this.createOreDrop(ModBlocks.STELLAR_ICE.get(), ModItems.STELLAR_ICE_CUBES.get());
+        this.dropSelf(ModBlocks.MINERAL_VENT.get());
         this.dropSelf(ModBlocks.DARK_REGOLITH.get());
-        this.dropSelf(ModBlocks.METEORITE_ORE.get());           //drop meteorite ore items?
+        this.dropSelf(ModBlocks.METEORITE_ORE.get());
 
         this.dropSelf(ModBlocks.TITAN_TOPSOIL.get());
         this.dropSelf(ModBlocks.LIGHT_REGOLITH.get());
-        this.dropSelf(ModBlocks.NEPTUNIAN_CLOUD.get());         //turn this into a proper gas as well <<<
-        this.dropSelf(ModBlocks.NITROGEN_SNOW.get());           //nitrogen snowball
+        this.dropOther(ModBlocks.NITROGEN_SNOW.get(), ModItems.NITROGEN_SNOWBALL.get());    //TODO: make drop 4 snowballs
         this.dropSelf(ModBlocks.NITROGEN_ICE.get());
-        this.dropSelf(ModBlocks.THIOLIN_ORE.get());             //liquid or solid drops?
-
-        //this.add(ModBlocks.SAPPHIRE_ORE.get(),
-        //        block -> createCopperLikeOreDrops(ModBlocks.SAPPHIRE_ORE.get(), ModItems.RAW_SAPPHIRE.get()));
-        //this.add(ModBlocks.DEEPSLATE_SAPPHIRE_ORE.get(),
-        //        block -> createCopperLikeOreDrops(ModBlocks.DEEPSLATE_SAPPHIRE_ORE.get(), ModItems.RAW_SAPPHIRE.get()));
-        //this.add(ModBlocks.NETHER_SAPPHIRE_ORE.get(),
-        //        block -> createCopperLikeOreDrops(ModBlocks.NETHER_SAPPHIRE_ORE.get(), ModItems.RAW_SAPPHIRE.get()));
-        //this.add(ModBlocks.END_STONE_SAPPHIRE_ORE.get(),
-        //        block -> createCopperLikeOreDrops(ModBlocks.END_STONE_SAPPHIRE_ORE.get(), ModItems.RAW_SAPPHIRE.get()));
-
+        this.createOreDrop(ModBlocks.THIOLIN_ORE.get(), ModItems.RAW_THIOLIN.get());
     }
 
-    //protected LootTable.Builder createCopperLikeOreDrops(Block pBlock, Item item) {
+    //protected LootTable.Builder createPlentifulOreDrops(Block pBlock, Item item) {
     //    return createSilkTouchDispatchTable(pBlock,
     //            this.applyExplosionDecay(pBlock,
     //                    LootItem.lootTableItem(item)
-    //                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))
+    //                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(3.0F, 5.0F)))
     //                            .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
     //}
 
