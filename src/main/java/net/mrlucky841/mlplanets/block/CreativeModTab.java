@@ -53,7 +53,7 @@ public class CreativeModTab {
                         pOutput.accept(ModBlocks.NEPTUNIAN_CLOUD.get());
                         pOutput.accept(ModBlocks.NITROGEN_SNOW.get());
                         pOutput.accept(ModBlocks.NITROGEN_ICE.get());
-                        pOutput.accept(ModBlocks.THIOLIN_ORE.get());
+                        pOutput.accept(ModBlocks.OUTER_THIOLIN_ORE.get());
 
 
                     })

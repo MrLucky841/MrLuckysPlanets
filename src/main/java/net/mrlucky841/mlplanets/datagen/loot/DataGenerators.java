@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.mrlucky841.mlplanets.MLPlanets;
 import net.mrlucky841.mlplanets.datagen.*;
-import net.mrlucky841.mlplanets.worldgen.WorldGenProvider;
+import net.mrlucky841.mlplanets.datagen.WorldGenDataProvider;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -26,7 +26,7 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new ItemModelDataProvider(packOutput, fileHelper));
         generator.addProvider(event.includeServer(), new RecipeDataProvider(packOutput));
         generator.addProvider(event.includeServer(), LootTableDataProvider.create(packOutput));
-        generator.addProvider(event.includeServer(), new WorldGenProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new WorldGenDataProvider(packOutput, lookupProvider));
         BlockTagDataGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
                 new BlockTagDataGenerator(packOutput, lookupProvider, fileHelper));
         generator.addProvider(event.includeServer(), new ItemTagDataGenerator(packOutput, lookupProvider, blockTagGenerator.contentsGetter(), fileHelper));

@@ -1,12 +1,15 @@
 package net.mrlucky841.mlplanets.block;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.LavaFluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.WaterFluid;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -44,20 +47,24 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.GLASS)));
     public static final RegistryObject<Block> SULFURIC_CLOUD = registerBlock("sulfuric_cloud",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.COBWEB).sound(SoundType.WOOL)
-                    .noCollission().noOcclusion().noLootTable().noParticlesOnBreak()));
+                    .noCollission().noOcclusion().noLootTable().noParticlesOnBreak().isViewBlocking(ModBlocks::never)));
     //public static final RegistryObject<Block> SUPERCRITICAL_CO2 = registerBlock("supercritical_co2",
-    //        () -> new Fluid(); ??
+    //        () -> new ??
+
     //Mercury(metallic,violent temp swings)
     public static final RegistryObject<Block> MERCURIAN_PYROXENE = registerBlock("mercurian_pyroxene",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.STONE)));
     public static final RegistryObject<Block> GRAPHITE_ORE = registerBlock("graphite_ore",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.STONE)));
+
     //Jupiter(big red spot,rapid winds,H2/He)
     //public static final RegistryObject<Block> STELLAR_GAS = registerBlock("stellar_gas",
     //        () -> new AirBlock(BlockBehaviour.Properties.copy(Blocks.AIR).sound(SoundType.WOOL)));
+
     //^Io(sulfur/magma volcanoes, mountainous, pyrite ores, sulfur snow)
     public static final RegistryObject<Block> SULFUROUS_HOARFROST = registerBlock("sulfurous_hoarfrost",
-            () -> new MultifaceBlock(BlockBehaviour.Properties.copy(Blocks.SNOW).sound(SoundType.SNOW)) {
+            () -> new MultifaceBlock(BlockBehaviour.Properties.copy(Blocks.SNOW).sound(SoundType.SNOW)
+                    .isViewBlocking(ModBlocks::never)) {
                 @Override
                 public MultifaceSpreader getSpreader() {
                     return null;
@@ -69,48 +76,62 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.CALCITE))); //make this change color! subtle red, yellow, red, white, black
     //public static final RegistryObject<Block> SULFUROUS_MAGMA = registerBlock("sulfurous_magma",
     //        () -> new LavaFluid(); ??
+
     //^Europa(smooth surface,subsurface ocean,thermal vents,icy,few cryovolcanoes)
     public static final RegistryObject<Block> STELLAR_ICE = registerBlock("stellar_ice",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.ICE).sound(SoundType.GLASS)));
-    public static final RegistryObject<Block> MINERAL_VENT = registerBlock("mineral_vent_side", //TODO: make this just "mineral_vent" with the right sides!!!
+    public static final RegistryObject<Block> MINERAL_VENT = registerBlock("mineral_vent_side", //TODO: make this just "mineral_vent" with the right sides!!! and tapering render
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.TUFF)));
     //public static final RegistryObject<Block> LUNAR_BRINE = registerBlock("lunar_brine",
     //        () -> new LavaFluid(); ??
+
     //^Ganymede(light surface w/ carvers & dark surface w/ craters, subsurface ocean, thin O2 atmosphere)
     public static final RegistryObject<Block> DARK_REGOLITH = registerBlock("dark_regolith",
             () -> new SandBlock(0, BlockBehaviour.Properties.copy(Blocks.SAND).sound(SoundType.SAND)));
+
     //^Callisto(dead,heavily cratered,ionosphere,weak CO2/O2 atmosphere)
     public static final RegistryObject<Block> METEORITE_ORE = registerBlock("meteorite_ore",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.METAL)));
+
     //Saturn(H2/He, undense, yellow, liquid H2 surface)
     //public static final RegistryObject<Block> LIQUID_METAL_HYDROGEN = registerBlock("liquid_metal_hydrogen",
     //        () -> new LavaFluid(); ??
+
     //^Titan(N2+hydrocarbons atmosphere,large,yellow)
     //public static final RegistryObject<Block> LIQUID_METHANE = registerBlock("liquid_methane",
     //        () -> new Fluid(); ??
     public static final RegistryObject<Block> TITAN_TOPSOIL = registerBlock("titan_topsoil",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.DIRT).sound(SoundType.GRAVEL)));
+    public static final RegistryObject<Block> TITAN_THIOLIN_ORE = registerBlock("titan_thiolin_ore",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.SNOW_BLOCK).sound(SoundType.SOUL_SOIL)));
+
     //^Enceladus(Ice,snow,cryovolcanoes,6mi deep ocean,porous rocky core)(young smooth areas + old heavily cratered regions)
 
     //^Lapetus(black/white colors,lapis??,high mountains)
     public static final RegistryObject<Block> LIGHT_REGOLITH = registerBlock("light_regolith",
             () -> new SandBlock(0, BlockBehaviour.Properties.copy(Blocks.SAND).sound(SoundType.SAND)));
+
     //Uranus(H2/He/CH4, very cold)
+
     //^Titania(ionosphere,craters,dark rock)
+
     //Neptune(Great Dark Spot, small giant, H2/He, ionic water surface, NH3/H2S clouds, storms?)
     public static final RegistryObject<Block> NEPTUNIAN_CLOUD = registerBlock("neptunian_cloud",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.COBWEB).sound(SoundType.WOOL)
-                .noCollission().noOcclusion().noLootTable().noParticlesOnBreak()));
+                .noCollission().noOcclusion().noLootTable().noParticlesOnBreak().isViewBlocking(ModBlocks::never)));
     //public static final RegistryObject<Block> CORE_IONIC_WATER = registerBlock("core_ionic_water",
     //        () -> new LavaFluid(); ??
+
     //^Triton(thin N2 atmosphere, clouds, N2 snow, cryovolcanoes, flat+ridges, thiolin deposits)
     public static final RegistryObject<Block> NITROGEN_SNOW = registerBlock("nitrogen_snow",
             () -> new SnowLayerBlock(BlockBehaviour.Properties.copy(Blocks.SNOW).sound(SoundType.SNOW)));
-    public static final RegistryObject<Block> THIOLIN_ORE = registerBlock("thiolin_ore",
+    public static final RegistryObject<Block> OUTER_THIOLIN_ORE = registerBlock("outer_thiolin_ore",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.SNOW_BLOCK).sound(SoundType.SOUL_SOIL)));
+
     //Pluto(N2 ice plains, subsurface ocean, wildly varying color)
     public static final RegistryObject<Block> NITROGEN_ICE = registerBlock("nitrogen_ice",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.PACKED_ICE).sound(SoundType.GLASS)));
+
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -124,5 +145,10 @@ public class ModBlocks {
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
+    }
+
+    //shamelessly stolen from MC source code. I don't understand why I can't just put a "false" in there
+    private static boolean never(BlockState p_50806_, BlockGetter p_50807_, BlockPos p_50808_) {
+        return false;
     }
 }

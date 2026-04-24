@@ -1,4 +1,4 @@
-package net.mrlucky841.mlplanets.worldgen;
+package net.mrlucky841.mlplanets.worldgen.feature;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -23,7 +23,6 @@ public class ConfiguredFeatures {
         RuleTest stoners = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
 
         List<OreConfiguration.TargetBlockState> testOres = List.of(OreConfiguration.target(stoners,
-                //ModBlocks.TEST_ORE.get().defaultBlockState()));
                 Blocks.DIAMOND_BLOCK.defaultBlockState()));
                 //,OreConfiguration.target());  //<<Put other replacement maps here, ie deepslate to the deepslate ore variant
 

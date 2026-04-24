@@ -3,20 +3,17 @@ package net.mrlucky841.mlplanets.datagen.loot;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SnowLayerBlock;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.mrlucky841.mlplanets.block.ModBlocks;
 import net.minecraftforge.registries.RegistryObject;
@@ -37,34 +34,64 @@ public class BlockLootTableGenerator extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.MARS_ROCK.get());
         this.dropSelf(ModBlocks.MARS_BEDROCK.get());
 
-        this.dropSelf(ModBlocks.VENUSIAN_OLIVINE.get());
+        this.dropSelf(ModBlocks.VENUSIAN_OLIVINE.get());        //TODO: Add olivine ores???
         this.dropSelf(ModBlocks.VENUSIAN_TOPROCK.get());
         this.dropSelf(ModBlocks.VENUSIAN_OBSIDIAN.get());
 
         this.dropSelf(ModBlocks.MERCURIAN_PYROXENE.get());
-        this.createOreDrop(ModBlocks.GRAPHITE_ORE.get(), ModItems.GRAPHITE.get());
+        this.dropOre(ModBlocks.GRAPHITE_ORE.get(), ModItems.GRAPHITE.get(),3,5);
         this.dropOther(ModBlocks.SULFUROUS_HOARFROST.get(), ModItems.SULFUR.get());
-        this.createOreDrop(ModBlocks.PYRITE_ORE.get(), ModItems.RAW_PYRITE.get());
+        this.dropOre(ModBlocks.PYRITE_ORE.get(), ModItems.RAW_PYRITE.get(),1,3);
         this.dropSelf(ModBlocks.IONIAN_FOYADA.get());
 
-        this.createOreDrop(ModBlocks.STELLAR_ICE.get(), ModItems.STELLAR_ICE_CUBES.get());
+        this.dropOreMix(ModBlocks.STELLAR_ICE.get(), ModItems.STELLAR_ICE_CUBES.get(),1,3, Items.GRAVEL, 0.7F);
         this.dropSelf(ModBlocks.MINERAL_VENT.get());
         this.dropSelf(ModBlocks.DARK_REGOLITH.get());
         this.dropSelf(ModBlocks.METEORITE_ORE.get());
 
         this.dropSelf(ModBlocks.TITAN_TOPSOIL.get());
+        this.dropOreMix(ModBlocks.TITAN_THIOLIN_ORE.get(), ModItems.RAW_THIOLIN.get(),1,3, ModBlocks.TITAN_TOPSOIL.get(), 0.3F);
         this.dropSelf(ModBlocks.LIGHT_REGOLITH.get());
-        this.dropOther(ModBlocks.NITROGEN_SNOW.get(), ModItems.NITROGEN_SNOWBALL.get());    //TODO: make drop 4 snowballs
+        this.dropOre(ModBlocks.NITROGEN_SNOW.get(), ModItems.NITROGEN_SNOWBALL.get(),4,4);
         this.dropSelf(ModBlocks.NITROGEN_ICE.get());
-        this.createOreDrop(ModBlocks.THIOLIN_ORE.get(), ModItems.RAW_THIOLIN.get());
+        this.dropOre(ModBlocks.OUTER_THIOLIN_ORE.get(), ModItems.RAW_THIOLIN.get(),3,5);
     }
 
-    //protected LootTable.Builder createPlentifulOreDrops(Block pBlock, Item item) {
-    //    return createSilkTouchDispatchTable(pBlock,
-    //            this.applyExplosionDecay(pBlock,
-    //                    LootItem.lootTableItem(item)
-    //                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(3.0F, 5.0F)))
-    //                            .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
+    protected void dropOre(Block block, ItemLike item, float min, float max) {
+        this.add(block,
+                createSilkTouchDispatchTable(block,
+                this.applyExplosionDecay(block,
+                        LootItem.lootTableItem(item)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
+                                .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))
+        );
+    }
+
+    protected void dropOreMix(Block parentBlock, ItemLike mainItem, float min, float max, ItemLike dirtItem, float chance) {
+        this.add(parentBlock,
+                LootTable.lootTable().withPool(
+                        this.applyExplosionCondition(parentBlock,
+                                LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1.0F))
+                                        .add(LootItem.lootTableItem(mainItem)
+                                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))
+                                                .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))))
+                        .withPool(this.applyExplosionCondition(parentBlock,
+                                LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                                        .add(LootItem.lootTableItem(dirtItem)
+                                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0F, 1F))))))
+        );
+    }
+
+    //protected void dropDusts(Block block, ItemLike item) {
+    //    block.getStateDefinition().???
+    //    this.add(block,
+    //            createSilkTouchDispatchTable(block,
+    //                    this.applyExplosionDecay(block,
+    //                            LootItem.lootTableItem(item)
+    //                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4F,4F)))
+    //                                    ))
+    //    );
     //}
 
     @Override

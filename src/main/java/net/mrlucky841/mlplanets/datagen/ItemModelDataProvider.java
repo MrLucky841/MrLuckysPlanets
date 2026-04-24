@@ -17,7 +17,14 @@ public class ItemModelDataProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        simpleItem(ModItems.GRAPHITE);
         simpleItem(ModItems.MARTIAN_DUST);
+        simpleItem(ModItems.NITROGEN_SNOWBALL);
+        simpleItem(ModItems.PYRITE);
+        simpleItem(ModItems.RAW_PYRITE);
+        simpleItem(ModItems.RAW_THIOLIN);
+        simpleItem(ModItems.STELLAR_ICE_CUBES);
+        simpleItem(ModItems.SULFUR);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

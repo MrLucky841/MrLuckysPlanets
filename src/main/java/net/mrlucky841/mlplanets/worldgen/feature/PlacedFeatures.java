@@ -1,4 +1,4 @@
-package net.mrlucky841.mlplanets.worldgen;
+package net.mrlucky841.mlplanets.worldgen.feature;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;

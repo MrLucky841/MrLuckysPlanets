@@ -1,32 +1,30 @@
 package net.mrlucky841.mlplanets.worldgen.biome;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.mrlucky841.mlplanets.MLPlanets;
 
 public class SpaceBiomes {
-    public static final ResourceKey<Biome> PHOBOS = ResourceKey.create(Registries.BIOME,
-            new ResourceLocation(MLPlanets.MODID,"phobos"));
+    public static final ResourceKey<Biome> CERES = ResourceKey.create(Registries.BIOME,
+            new ResourceLocation(MLPlanets.MODID,"ceres"));
 
     public static void bootstrap(BootstapContext<Biome> context) {
-        context.register(PHOBOS, phobos(context));
+        context.register(CERES, airless(context));
     }
 
-    public static void globalOverworldGeneration(BiomeGenerationSettings.Builder builder) {
-        BiomeDefaultFeatures.addDefaultCarversAndLakes(builder);
-        BiomeDefaultFeatures.addDefaultCrystalFormations(builder);
-        BiomeDefaultFeatures.addDefaultMonsterRoom(builder);
-        BiomeDefaultFeatures.addDefaultUndergroundVariety(builder);
-        BiomeDefaultFeatures.addDefaultSprings(builder);
-        BiomeDefaultFeatures.addSurfaceFreezing(builder);
-    }
+    //public static void globalOverworldGeneration(BiomeGenerationSettings.Builder builder) {
+    //    BiomeDefaultFeatures.addDefaultCarversAndLakes(builder);
+    //    BiomeDefaultFeatures.addDefaultCrystalFormations(builder);
+    //    BiomeDefaultFeatures.addDefaultMonsterRoom(builder);
+    //    BiomeDefaultFeatures.addDefaultUndergroundVariety(builder);
+    //    BiomeDefaultFeatures.addDefaultSprings(builder);
+    //    BiomeDefaultFeatures.addSurfaceFreezing(builder);
+    //}
 
-    private static Biome phobos(BootstapContext<Biome> context) {
+    private static Biome airless(BootstapContext<Biome> context) {
         MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
         //spawnBuilder.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 5, 4, 4));
         //BiomeDefaultFeatures.addDefaultSoftDisks(biomeBuilder);
