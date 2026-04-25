@@ -10,32 +10,26 @@ import org.jetbrains.annotations.NotNull;
 public class CeresDensityFunction implements DensityFunction {
     public static final MapCodec<CeresDensityFunction> MAP_CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Codec.DOUBLE.fieldOf("big_radius").forGetter(r -> r.big_radius),
-                    Codec.DOUBLE.fieldOf("small_radius").forGetter(r -> r.small_radius),
-                    Codec.DOUBLE.optionalFieldOf("center_x", 0.0).forGetter(r -> r.centerX),
-                    Codec.DOUBLE.optionalFieldOf("center_z", 0.0).forGetter(r -> r.centerZ)
+                    Codec.INT.fieldOf("big_radius").forGetter(r -> r.big_radius),
+                    Codec.INT.fieldOf("small_radius").forGetter(r -> r.small_radius)
             ).apply(instance, CeresDensityFunction::new)
     );
 
     public static final KeyDispatchDataCodec<CeresDensityFunction> CODEC = KeyDispatchDataCodec.of(MAP_CODEC);
-    private final double big_radius;
-    private final double small_radius;
-    private final double maxValue;
-    private final double minValue;
-    private final double centerX;
-    private final double centerZ;
+    private final int big_radius;
+    private final int small_radius;
+    private final int maxValue;
+    private final int minValue;
 
 
-    public CeresDensityFunction(double small_radius, double big_radius, double centerX, double centerZ) {
+    public CeresDensityFunction(int small_radius, int big_radius) {
         this.small_radius = small_radius;
         this.big_radius = big_radius;
-        this.maxValue = 256;
+        this.maxValue = 1;
         this.minValue = 0;
-        this.centerX = centerX;
-        this.centerZ = centerZ;
     }
 
-    //Actual chunk-genning goes here!!! (output is height!)
+    //Actual chunk-genning goes here!!! (output is whatever I want, used directly, it is 0 for air, 1 for block)
     @Override
     public double compute(FunctionContext context) {
         //do Perlin noise
@@ -44,9 +38,15 @@ public class CeresDensityFunction implements DensityFunction {
 
         //create new pockmark craters
 
+        //test function
+        int x = context.blockX();
+        int y = context.blockY();
+        int z = context.blockZ();
+        double s = 64 + (5 * Math.cos((x*x+z*z)));
 
-        return 1;
+        return y>s ? 0: 1;
     }
+
 
     @Override
     public void fillArray(double[] arr, @NotNull ContextProvider provider) {
@@ -61,17 +61,17 @@ public class CeresDensityFunction implements DensityFunction {
     }
 
     @Override
-    public @NotNull KeyDispatchDataCodec<? extends DensityFunction> codec() {
+    public KeyDispatchDataCodec<? extends DensityFunction> codec() {
         return CODEC;
     }
 
     @Override
     public double minValue() {
-        return minValue;
+        return 0;
     }
 
     @Override
     public double maxValue() {
-        return maxValue;
+        return 1;
     }
 }

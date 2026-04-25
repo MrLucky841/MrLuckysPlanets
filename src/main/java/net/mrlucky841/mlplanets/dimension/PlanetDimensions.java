@@ -1,11 +1,13 @@
 package net.mrlucky841.mlplanets.dimension;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
@@ -25,6 +27,9 @@ import java.util.List;
 import java.util.OptionalLong;
 
 public class PlanetDimensions {
+    public static final ResourceKey<DensityFunction> CERES_DENSITY_FUNCTION = ResourceKey.create(Registries.DENSITY_FUNCTION,
+            new ResourceLocation(MLPlanets.MODID,"ceres_density_function"));
+
     public static final ResourceKey<LevelStem> CERES_STEM = ResourceKey.create(Registries.LEVEL_STEM,
             new ResourceLocation(MLPlanets.MODID,"ceres"));
 
@@ -36,9 +41,6 @@ public class PlanetDimensions {
 
     public static final ResourceKey<NoiseGeneratorSettings> CERES_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS,
             new ResourceLocation(MLPlanets.MODID, "ceres_noise_gen"));
-
-    public static final ResourceKey<DensityFunction> CERES_DENSITY_FUNCTION = ResourceKey.create(Registries.DENSITY_FUNCTION,
-            new ResourceLocation(MLPlanets.MODID,"ceres_density_function"));
 
     //Specify the dimension types here
     public static void bootstrapType(BootstapContext<DimensionType> context) {
@@ -66,9 +68,12 @@ public class PlanetDimensions {
         //params: minY, maxY, noiseSizeHorz, noiseSizeVert
         NoiseSettings noiseDims = NoiseSettings.create(-32,256,2,2);
         HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
-        HolderGetter<NormalNoise.NoiseParameters> noise = context.lookup(Registries.NOISE);
-        DensityFunction finalDensity = //DensityFunctions.yClampedGradient(-32,64,1,-1);
-            new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CERES_DENSITY_FUNCTION));
+        //HolderGetter<NormalNoise.NoiseParameters> noise = context.lookup(Registries.NOISE);
+        DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CERES_DENSITY_FUNCTION));
+        //DensityFunction finalDensity = DensityFunctions.mul(
+        //    DensityFunctions.yClampedGradient(-32,64,1,0),
+        //    new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CERES_DENSITY_FUNCTION)));
+            //It was working when I was just using yClampedGradient
         //VV where do I put this??
         return new NoiseGeneratorSettings(
             noiseDims,
@@ -107,10 +112,20 @@ public class PlanetDimensions {
         //...
     }
 
+    //called by .add(Registries.DENSITY_FUNCTION, PlanetDimensions::bootstrapDensityFunction) in the DataProvider
     public static void bootstrapDensityFunction(BootstapContext<DensityFunction> context) {
-        context.register(CERES_DENSITY_FUNCTION, new CeresDensityFunction(10,50,1,1));
+        //context.register(CERES_DENSITY_FUNCTION, new CeresDensityFunction(50,10));
+        context.register(CERES_DENSITY_FUNCTION, buildDF(context));
         //TODO, ^^^ why does MC give me an "unbounded values in registry" error?
         //...
+    }
+
+    private static DensityFunction buildDF(BootstapContext<DensityFunction> context) {
+        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);       //make gas giants like this?
+        Holder.Reference<NormalNoise.NoiseParameters> params = noiseLookup.getOrThrow(Noises.SURFACE);  //make gas giants like this?
+        //HolderGetter<DensityFunction> densityLookup = context.lookup(Registries.DENSITY_FUNCTION);
+        //densityLookup.getOrThrow(CERES_DENSITY_FUNCTION);
+        return DensityFunctions.noise(params);
     }
 
     //actual generation

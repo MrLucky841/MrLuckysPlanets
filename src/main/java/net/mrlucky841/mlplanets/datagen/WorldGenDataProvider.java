@@ -20,7 +20,7 @@ public class WorldGenDataProvider extends DatapackBuiltinEntriesProvider {
             .add(Registries.DIMENSION_TYPE, PlanetDimensions::bootstrapType)
             .add(Registries.CONFIGURED_FEATURE, ConfiguredFeatures::bootstrap)
             .add(Registries.PLACED_FEATURE, PlacedFeatures::bootstrap)
-            .add(Registries.DENSITY_FUNCTION, PlanetDimensions::bootstrapDensityFunction)
+            .add(Registries.DENSITY_FUNCTION, PlanetDimensions::bootstrapDensityFunction) //maybe move to first position?
             .add(Registries.NOISE_SETTINGS, PlanetDimensions::bootstrapNoiseSettings)
             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifiers::bootstrap)
             .add(Registries.BIOME, SpaceBiomes::bootstrap)
