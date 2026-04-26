@@ -115,17 +115,27 @@ public class PlanetDimensions {
     //called by .add(Registries.DENSITY_FUNCTION, PlanetDimensions::bootstrapDensityFunction) in the DataProvider
     public static void bootstrapDensityFunction(BootstapContext<DensityFunction> context) {
         //context.register(CERES_DENSITY_FUNCTION, new CeresDensityFunction(50,10));
-        context.register(CERES_DENSITY_FUNCTION, buildDF(context));
+        context.register(CERES_DENSITY_FUNCTION, buildCeres(context));
         //TODO, ^^^ why does MC give me an "unbounded values in registry" error?
+        //context.register(GAS_GIANT_DENSITY_FUNCTION, buildGasGiant(context));
         //...
     }
 
-    private static DensityFunction buildDF(BootstapContext<DensityFunction> context) {
+    private static DensityFunction buildGasGiant(BootstapContext<DensityFunction> context) {
+        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
+        Holder.Reference<NormalNoise.NoiseParameters> params = noiseLookup.getOrThrow(Noises.SURFACE);
+        return DensityFunctions.add(
+                DensityFunctions.noise(params),
+                DensityFunctions.constant(-0.2));
+    }
+
+    private static DensityFunction buildCeres(BootstapContext<DensityFunction> context) {
         HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);       //make gas giants like this?
         Holder.Reference<NormalNoise.NoiseParameters> params = noiseLookup.getOrThrow(Noises.SURFACE);  //make gas giants like this?
         //HolderGetter<DensityFunction> densityLookup = context.lookup(Registries.DENSITY_FUNCTION);
         //densityLookup.getOrThrow(CERES_DENSITY_FUNCTION);
-        return DensityFunctions.noise(params);
+        //return PlanetDensityFunctions.ceresNoise(params,7);
+        return new CeresDensityFunction(0.5);
     }
 
     //actual generation
