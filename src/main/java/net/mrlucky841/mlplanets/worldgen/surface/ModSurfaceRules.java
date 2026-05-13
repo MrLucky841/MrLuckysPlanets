@@ -62,10 +62,12 @@ public class ModSurfaceRules {
         //See also:
         //https://github.com/KyaniteMods/DeeperAndDarker/blob/ba7bcc0712d1e44993e1dc99c02d52995f0d2c89/src/main/java/com/kyanite/deeperdarker/world/otherside/gen/OthersideGeneration.java#L26
         return srSeq(
+                //bedrock from 0-5
+                sIfTroo(verticalGradient("bedtime_rock", VerticalAnchor.absolute(1), VerticalAnchor.aboveBottom(5)),BEDROCK),
                 //deepslate below 30
                 sIfTroo(verticalGradient("random_bullshit", VerticalAnchor.aboveBottom(30), VerticalAnchor.aboveBottom(35)), deepRock),
-                //bedrock from 0-5
-                sIfTroo(verticalGradient("bedtime_rock", VerticalAnchor.absolute(0), VerticalAnchor.aboveBottom(5)),BEDROCK)
+                //surface of regolith
+                regolithSurface
 
 
         );

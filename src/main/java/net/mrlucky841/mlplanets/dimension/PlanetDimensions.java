@@ -42,10 +42,12 @@ public class PlanetDimensions {
     public static final ResourceKey<NoiseGeneratorSettings> CERES_NOISE_GEN = ResourceKey.create(Registries.NOISE_SETTINGS,
             new ResourceLocation(MLPlanets.MODID, "ceres_noise_gen"));
 
+
+
     //Specify the dimension types here
     public static void bootstrapType(BootstapContext<DimensionType> context) {
         context.register(AIRLESS_DIM_TYPE, new DimensionType(
-                OptionalLong.of(1200), // fixedTime
+                OptionalLong.of(1), // fixedTime
                 false, // hasSkylight
                 false, // hasCeiling
                 false, // ultraWarm
@@ -58,7 +60,7 @@ public class PlanetDimensions {
                 256, // logicalHeight
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 BuiltinDimensionTypes.OVERWORLD_EFFECTS, // effectsLocation
-                0.0f, // ambientLight
+                10.0f, // ambientLight
                 new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)));
         //register other dim types here...
         //context.register(MARS_DIM_TYPE, new DimensionType( ...
@@ -66,38 +68,32 @@ public class PlanetDimensions {
 
     public static NoiseGeneratorSettings makeNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {
         //params: minY, maxY, noiseSizeHorz, noiseSizeVert
-        NoiseSettings noiseDims = NoiseSettings.create(-32,256,2,2);
+        NoiseSettings noiseDims = NoiseSettings.create(0,256,2,2);
         HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
-        //HolderGetter<NormalNoise.NoiseParameters> noise = context.lookup(Registries.NOISE);
         DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CERES_DENSITY_FUNCTION));
-        //DensityFunction finalDensity = DensityFunctions.mul(
-        //    DensityFunctions.yClampedGradient(-32,64,1,0),
-        //    new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CERES_DENSITY_FUNCTION)));
-            //It was working when I was just using yClampedGradient
-        //VV where do I put this??
         return new NoiseGeneratorSettings(
             noiseDims,
             ModBlocks.CHONDRITE.get().defaultBlockState(),
             Blocks.AIR.defaultBlockState(),
             new NoiseRouter(
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),    //initialDensityWithoutJaggedness   //does this even matter?..
+                    DensityFunctions.zero(),    //barrierNoise
+                    DensityFunctions.zero(),    //fluidLevelFloodedNoise
+                    DensityFunctions.zero(),    //fluidLevelSpreadNoise
+                    DensityFunctions.zero(),    //lavaNoise
+                    DensityFunctions.zero(),    //temperature
+                    DensityFunctions.zero(),    //vegetation
+                    DensityFunctions.zero(),    //continents
+                    DensityFunctions.zero(),    //erosion
+                    DensityFunctions.zero(),    //depth
+                    DensityFunctions.zero(),    //ridges
+                    DensityFunctions.zero(),    //initialDensityWithoutJaggedness
                     finalDensity,               //finalDensity
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero(),
-                    DensityFunctions.zero()
+                    DensityFunctions.zero(),    //veinToggle
+                    DensityFunctions.zero(),    //veinRidged
+                    DensityFunctions.zero()     //veinGap
             ),
             //VV could also ues: SurfaceRules.sequence(put all sequences in here)
-            ModSurfaceRules.makeRockRules(ModSurfaceRules.REGOLITH,ModSurfaceRules.CHONDRITE,ModSurfaceRules.CHONDRITE),
+            ModSurfaceRules.makeRockRules(ModSurfaceRules.REGOLITH,ModSurfaceRules.CHONDRITE,ModSurfaceRules.VENUSIAN_OBSIDIAN),
             List.of(), //list of biome climate parameterPoints "spawnTarget"
             0,
             true,
@@ -116,7 +112,6 @@ public class PlanetDimensions {
     public static void bootstrapDensityFunction(BootstapContext<DensityFunction> context) {
         //context.register(CERES_DENSITY_FUNCTION, new CeresDensityFunction(50,10));
         context.register(CERES_DENSITY_FUNCTION, buildCeres(context));
-        //TODO, ^^^ why does MC give me an "unbounded values in registry" error?
         //context.register(GAS_GIANT_DENSITY_FUNCTION, buildGasGiant(context));
         //...
     }
@@ -130,13 +125,32 @@ public class PlanetDimensions {
     }
 
     private static DensityFunction buildCeres(BootstapContext<DensityFunction> context) {
-        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);       //make gas giants like this?
-        Holder.Reference<NormalNoise.NoiseParameters> params = noiseLookup.getOrThrow(Noises.SURFACE);  //make gas giants like this?
-        //HolderGetter<DensityFunction> densityLookup = context.lookup(Registries.DENSITY_FUNCTION);
-        //densityLookup.getOrThrow(CERES_DENSITY_FUNCTION);
-        //return PlanetDensityFunctions.ceresNoise(params,7);
-        return new CeresDensityFunction(0.5);
+        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
+        Holder.Reference<NormalNoise.NoiseParameters> cheeseLookup = noiseLookup.getOrThrow(Noises.CAVE_CHEESE); //use DensityFunctions.noise()
+        //flat noise for main ridges and plateaus
+
+        //large basin craters
+        //mild noise for bumps
+        //pockmark craters
+
+        return new CeresDensityFunction(1);
+
+        //return DensityFunctions.add(
+        //    DensityFunctions.yClampedGradient(0,64,1,-1),
+        //    DensityFunctions.mul(
+        //        DensityFunctions.noise(cheeseLookup,1,1),
+        //        DensityFunctions.constant(1)
+        //    )
+        //    //new CeresDensityFunction(1)
+        //);
+
+        //return DensityFunctions.mul(
+        //        new CeresDensityFunction(0.5),
+        //        DensityFunctions.yClampedGradient(0,64,1,-1)
+        //);
     }
+    //0 is air, 1 is solid
+
 
     //actual generation
     public static void bootstrapStem(BootstapContext<LevelStem> context) {
