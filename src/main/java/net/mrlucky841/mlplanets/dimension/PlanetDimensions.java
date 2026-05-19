@@ -125,15 +125,15 @@ public class PlanetDimensions {
     }
 
     private static DensityFunction buildCeres(BootstapContext<DensityFunction> context) {
-        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
-        Holder.Reference<NormalNoise.NoiseParameters> cheeseLookup = noiseLookup.getOrThrow(Noises.CAVE_CHEESE); //use DensityFunctions.noise()
+        //HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
+        //Holder.Reference<NormalNoise.NoiseParameters> cheeseLookup = noiseLookup.getOrThrow(Noises.CAVE_CHEESE); //use DensityFunctions.noise()
         //flat noise for main ridges and plateaus
 
         //large basin craters
         //mild noise for bumps
         //pockmark craters
 
-        return new CeresDensityFunction(1);
+        return new CeresDensityFunction(1); //Radius of bigg ceres craters is 70-100km
 
         //return DensityFunctions.add(
         //    DensityFunctions.yClampedGradient(0,64,1,-1),
