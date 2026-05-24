@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.RegisterEvent;
 import net.mrlucky841.mlplanets.MLPlanets;
-import net.mrlucky841.mlplanets.dimension.CeresDensityFunction;
+import net.mrlucky841.mlplanets.worldgen.densityfunctions.CraterDensityFunction;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PlanetGenRegistry {
@@ -14,8 +14,8 @@ public class PlanetGenRegistry {
     public static void onRegisterEvent(RegisterEvent event) {
         event.register(Registries.DENSITY_FUNCTION_TYPE, helper -> {
             helper.register(
-                    ResourceLocation.fromNamespaceAndPath(MLPlanets.MODID, "ceres_density_function"),
-                    CeresDensityFunction.CODEC.codec()
+                    ResourceLocation.fromNamespaceAndPath(MLPlanets.MODID, "crater_density_function"),
+                    CraterDensityFunction.CODEC.codec()
             );
         });
     }

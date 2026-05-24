@@ -7,7 +7,6 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
@@ -27,8 +26,8 @@ import java.util.List;
 import java.util.OptionalLong;
 
 public class PlanetDimensions {
-    public static final ResourceKey<DensityFunction> CERES_DENSITY_FUNCTION = ResourceKey.create(Registries.DENSITY_FUNCTION,
-            new ResourceLocation(MLPlanets.MODID,"ceres_density_function"));
+    public static final ResourceKey<DensityFunction> CRATER_DENSITY_FUNCTION = ResourceKey.create(Registries.DENSITY_FUNCTION,
+            new ResourceLocation(MLPlanets.MODID,"crater_density_function"));
 
     public static final ResourceKey<LevelStem> CERES_STEM = ResourceKey.create(Registries.LEVEL_STEM,
             new ResourceLocation(MLPlanets.MODID,"ceres"));
@@ -70,7 +69,7 @@ public class PlanetDimensions {
         //params: minY, maxY, noiseSizeHorz, noiseSizeVert
         NoiseSettings noiseDims = NoiseSettings.create(0,256,2,2);
         HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
-        DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CERES_DENSITY_FUNCTION));
+        DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CRATER_DENSITY_FUNCTION));
         return new NoiseGeneratorSettings(
             noiseDims,
             ModBlocks.CHONDRITE.get().defaultBlockState(),
@@ -111,7 +110,7 @@ public class PlanetDimensions {
     //called by .add(Registries.DENSITY_FUNCTION, PlanetDimensions::bootstrapDensityFunction) in the DataProvider
     public static void bootstrapDensityFunction(BootstapContext<DensityFunction> context) {
         //context.register(CERES_DENSITY_FUNCTION, new CeresDensityFunction(50,10));
-        context.register(CERES_DENSITY_FUNCTION, buildCeres(context));
+        context.register(CRATER_DENSITY_FUNCTION, buildCeres(context));
         //context.register(GAS_GIANT_DENSITY_FUNCTION, buildGasGiant(context));
         //...
     }
@@ -125,24 +124,32 @@ public class PlanetDimensions {
     }
 
     private static DensityFunction buildCeres(BootstapContext<DensityFunction> context) {
-        //HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
-        //Holder.Reference<NormalNoise.NoiseParameters> cheeseLookup = noiseLookup.getOrThrow(Noises.CAVE_CHEESE); //use DensityFunctions.noise()
-        //flat noise for main ridges and plateaus
+        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
+        Holder.Reference<NormalNoise.NoiseParameters> bigContinentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS_LARGE);
+        Holder.Reference<NormalNoise.NoiseParameters> continentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS);
+        Holder.Reference<NormalNoise.NoiseParameters> erosionLookup = noiseLookup.getOrThrow(Noises.EROSION);
+        Holder.Reference<NormalNoise.NoiseParameters> ridgeLookup = noiseLookup.getOrThrow(Noises.RIDGE);
 
+        //flat noise for main ridges and plateaus
         //large basin craters
         //mild noise for bumps
         //pockmark craters
 
-        return new CeresDensityFunction(1); //Radius of bigg ceres craters is 70-100km
+        //return new CraterDensityFunction(1); //Radius of bigg ceres craters is 70-100km
 
-        //return DensityFunctions.add(
-        //    DensityFunctions.yClampedGradient(0,64,1,-1),
-        //    DensityFunctions.mul(
-        //        DensityFunctions.noise(cheeseLookup,1,1),
-        //        DensityFunctions.constant(1)
-        //    )
-        //    //new CeresDensityFunction(1)
-        //);
+        return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-4),
+            DensityFunctions.add(
+            DensityFunctions.add(
+            DensityFunctions.add(
+                DensityFunctions.mul(DensityFunctions.constant(0.22),
+                    DensityFunctions.noise(continentLookup,0.12,0)),
+                DensityFunctions.mul(DensityFunctions.constant(0.22),
+                    DensityFunctions.noise(erosionLookup,0.18,0))),
+                DensityFunctions.mul(DensityFunctions.constant(0.22),
+                    DensityFunctions.noise(ridgeLookup,0.35,0))),
+                DensityFunctions.mul(DensityFunctions.constant(0.5),
+                        DensityFunctions.noise(bigContinentLookup,1,5)))
+        );
 
         //return DensityFunctions.mul(
         //        new CeresDensityFunction(0.5),

@@ -68,14 +68,21 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+    //maven {
+    //    name = "Xaero's Maven"
+    //    url = "https://chocolateminecraft.com/maven"
+    //}
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+
+    //runtimeOnly(fg.deobf("xaero.lib:xaerolib-forge-${minecraft_version}:+"))
+    //runtimeOnly(fg.deobf("xaero.map:xaeroworldmap-forge-${minecraft_version}:${xworldmap_version}"))
+    //runtimeOnly(fg.deobf("xaero.minimap:xaerominimap-forge-${minecraft_version}:${xminimap_version}"))
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
