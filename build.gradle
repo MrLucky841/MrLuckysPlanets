@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 version = mod_version
@@ -64,9 +65,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        // location of the maven that hosts JEI files since January 2023
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
+        url "https://cursemaven.com"
     }
     //maven {
     //    name = "Xaero's Maven"
@@ -76,17 +75,20 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    //implementation fg.deobf("curse.maven:<slug>-<curseforge_id>:<fields>")
+    ///runtimeOnly fg.deobf("curse.maven:jei-238222:6600311")
+    ///runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
+    runtimeOnly fg.deobf("curse.maven:pehkui-319596:5393101") //broken by itself...
+    ///runtimeOnly fg.deobf("curse.maven:lodestone-616457:6213794")
+    ///runtimeOnly fg.deobf("curse.maven:fusion-connected-textures-854949:7471518")
+    ///runtimeOnly fg.deobf("curse.maven:zps-1283072:7944271")
+    ///runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+    ///runtimeOnly fg.deobf("curse.maven:valkyrienskies-258371:7906689")
+    ///runtimeOnly fg.deobf("curse.maven:vlib-1265893:7378603")
+    //runtimeOnly fg.deobf("curse.maven:genesis-1367303:7923147")
 
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-
-    //runtimeOnly(fg.deobf("xaero.lib:xaerolib-forge-${minecraft_version}:+"))
-    //runtimeOnly(fg.deobf("xaero.map:xaeroworldmap-forge-${minecraft_version}:${xworldmap_version}"))
-    //runtimeOnly(fg.deobf("xaero.minimap:xaerominimap-forge-${minecraft_version}:${xminimap_version}"))
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    //runtimeOnly "curse.maven:xaeroworldmap-317780:8042194"
+    //runtimeOnly "curse.maven:xaerominimap-263420:8046960"
 }
 
 tasks.named('processResources', ProcessResources).configure {
