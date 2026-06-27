@@ -21,6 +21,7 @@ import net.mrlucky841.mlplanets.block.ModBlocks;
 import net.mrlucky841.mlplanets.worldgen.biome.CeresChunkGenerator;
 import net.mrlucky841.mlplanets.worldgen.biome.SpaceBiomes;
 import net.mrlucky841.mlplanets.worldgen.surface.ModSurfaceRules;
+//import shipwrights.genesis.worldgen.CraterNoise;
 
 import java.util.List;
 import java.util.OptionalLong;
@@ -139,22 +140,23 @@ public class PlanetDimensions {
 
         return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-4),
             DensityFunctions.add(
+                    DensityFunctions.mul(DensityFunctions.constant(0.22),
+                            DensityFunctions.noise(continentLookup,0.12,0)),
             DensityFunctions.add(
+                    DensityFunctions.mul(DensityFunctions.constant(0.22),
+                            DensityFunctions.noise(erosionLookup,0.18,0)),
             DensityFunctions.add(
                 DensityFunctions.mul(DensityFunctions.constant(0.22),
-                    DensityFunctions.noise(continentLookup,0.12,0)),
-                DensityFunctions.mul(DensityFunctions.constant(0.22),
-                    DensityFunctions.noise(erosionLookup,0.18,0))),
-                DensityFunctions.mul(DensityFunctions.constant(0.22),
-                    DensityFunctions.noise(ridgeLookup,0.35,0))),
+                    DensityFunctions.noise(ridgeLookup,0.35,0)),
                 DensityFunctions.mul(DensityFunctions.constant(0.5),
-                        DensityFunctions.noise(bigContinentLookup,1,5)))
-        );
+                        DensityFunctions.noise(bigContinentLookup,1,5))
+        ))));
 
         //return DensityFunctions.mul(
         //        new CeresDensityFunction(0.5),
         //        DensityFunctions.yClampedGradient(0,64,1,-1)
         //);
+
     }
     //0 is air, 1 is solid
 

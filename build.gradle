@@ -67,28 +67,27 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
-    //maven {
-    //    name = "Xaero's Maven"
-    //    url = "https://chocolateminecraft.com/maven"
-    //}
+    maven {
+        name = "Xaero's Maven"
+        url = "https://chocolateminecraft.com/maven"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    //implementation fg.deobf("curse.maven:<slug>-<curseforge_id>:<fields>")
-    ///runtimeOnly fg.deobf("curse.maven:jei-238222:6600311")
-    ///runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
-    runtimeOnly fg.deobf("curse.maven:pehkui-319596:5393101") //broken by itself...
-    ///runtimeOnly fg.deobf("curse.maven:lodestone-616457:6213794")
-    ///runtimeOnly fg.deobf("curse.maven:fusion-connected-textures-854949:7471518")
-    ///runtimeOnly fg.deobf("curse.maven:zps-1283072:7944271")
-    ///runtimeOnly fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
-    ///runtimeOnly fg.deobf("curse.maven:valkyrienskies-258371:7906689")
-    ///runtimeOnly fg.deobf("curse.maven:vlib-1265893:7378603")
-    //runtimeOnly fg.deobf("curse.maven:genesis-1367303:7923147")
 
-    //runtimeOnly "curse.maven:xaeroworldmap-317780:8042194"
-    //runtimeOnly "curse.maven:xaerominimap-263420:8046960"
+    runtimeOnly fg.deobf("curse.maven:jei-238222:6600311")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:pehkui-319596:5393101")
+    implementation fg.deobf("curse.maven:lodestone-616457:6213794")
+    implementation fg.deobf("curse.maven:fusion-connected-textures-854949:7471518")
+    implementation fg.deobf("curse.maven:zps-1283072:7944271")
+    implementation fg.deobf("curse.maven:kotlin-for-forge-351264:7291067")
+    implementation fg.deobf("curse.maven:valkyrienskies-258371:7906689")
+    implementation fg.deobf("curse.maven:vlib-1265893:7378603")
+    implementation fg.deobf("curse.maven:genesis-1367303:7923147")
+
+    runtimeOnly "xaero.map:xaeroworldmap-forge-$minecraft_version:$xworldmap_version:dev"
 }
 
 tasks.named('processResources', ProcessResources).configure {

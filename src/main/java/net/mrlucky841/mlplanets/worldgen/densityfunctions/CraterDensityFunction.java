@@ -49,12 +49,7 @@ public class CraterDensityFunction extends BlendedNoise {
         double y = context.blockY();
         double z = context.blockZ();
 
-        //TODO: Totally rework so it fits better with traditional terrain generation
-
-        double h = 64; //baseline depth
-        h = h + crater(x,z,72,32, 0, 0,21, 28,0.5, 0.89561); //medium size
-
-        return y>h ? 0 : 1;
+        return crater(x,z,72,32, 0, 0,21, 28,0.5, 0.89561); //medium size
     }
 
     private double crater(double x, double z, double poi_dist, double radius, double offX, double offZ,
