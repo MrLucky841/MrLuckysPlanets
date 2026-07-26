@@ -21,6 +21,7 @@ import net.mrlucky841.mlplanets.block.ModBlocks;
 import net.mrlucky841.mlplanets.worldgen.biome.CeresChunkGenerator;
 import net.mrlucky841.mlplanets.worldgen.biome.SpaceBiomes;
 import net.mrlucky841.mlplanets.worldgen.surface.ModSurfaceRules;
+import shipwrights.genesis.worldgen.CraterNoise;
 //import shipwrights.genesis.worldgen.CraterNoise;
 
 import java.util.List;
@@ -118,10 +119,24 @@ public class PlanetDimensions {
 
     private static DensityFunction buildGasGiant(BootstapContext<DensityFunction> context) {
         HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
-        Holder.Reference<NormalNoise.NoiseParameters> params = noiseLookup.getOrThrow(Noises.SURFACE);
+        Holder.Reference<NormalNoise.NoiseParameters> surfaceLookup = noiseLookup.getOrThrow(Noises.SURFACE);
         return DensityFunctions.add(
-                DensityFunctions.noise(params),
+                DensityFunctions.noise(surfaceLookup),
                 DensityFunctions.constant(-0.2));
+    }
+
+    private static DensityFunction buildVenus(BootstapContext<DensityFunction> context) {
+        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
+        Holder.Reference<NormalNoise.NoiseParameters> ridgeLookup = noiseLookup.getOrThrow(Noises.RIDGE);
+        Holder.Reference<NormalNoise.NoiseParameters> bigContinentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS_LARGE);
+        return DensityFunctions.add(
+                DensityFunctions.yClampedGradient(0,220,1,-2),
+                DensityFunctions.add(
+                        DensityFunctions.mul(DensityFunctions.constant(1),
+                                DensityFunctions.noise(ridgeLookup,0.35,1.5)),
+                        DensityFunctions.mul(DensityFunctions.constant(0.5),
+                                DensityFunctions.noise(bigContinentLookup,1,5))
+                ));
     }
 
     private static DensityFunction buildCeres(BootstapContext<DensityFunction> context) {
@@ -130,33 +145,136 @@ public class PlanetDimensions {
         Holder.Reference<NormalNoise.NoiseParameters> continentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS);
         Holder.Reference<NormalNoise.NoiseParameters> erosionLookup = noiseLookup.getOrThrow(Noises.EROSION);
         Holder.Reference<NormalNoise.NoiseParameters> ridgeLookup = noiseLookup.getOrThrow(Noises.RIDGE);
+        Holder.Reference<NormalNoise.NoiseParameters> caveCheeseLookup = noiseLookup.getOrThrow(Noises.CAVE_CHEESE);
 
         //flat noise for main ridges and plateaus
         //large basin craters
         //mild noise for bumps
         //pockmark craters
 
+        //Example of custom density function
         //return new CraterDensityFunction(1); //Radius of bigg ceres craters is 70-100km
 
-        return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-4),
-            DensityFunctions.add(
-                    DensityFunctions.mul(DensityFunctions.constant(0.22),
-                            DensityFunctions.noise(continentLookup,0.12,0)),
-            DensityFunctions.add(
-                    DensityFunctions.mul(DensityFunctions.constant(0.22),
-                            DensityFunctions.noise(erosionLookup,0.18,0)),
-            DensityFunctions.add(
-                DensityFunctions.mul(DensityFunctions.constant(0.22),
-                    DensityFunctions.noise(ridgeLookup,0.35,0)),
-                DensityFunctions.mul(DensityFunctions.constant(0.5),
-                        DensityFunctions.noise(bigContinentLookup,1,5))
-        ))));
-
+        //WeirdScaledSampler example (doesn't work)
         //return DensityFunctions.mul(
-        //        new CeresDensityFunction(0.5),
-        //        DensityFunctions.yClampedGradient(0,64,1,-1)
+        //    DensityFunctions.yClampedGradient(0,220,1,-3),
+        //    DensityFunctions.weirdScaledSampler(
+        //        DensityFunctions.noise(caveCheeseLookup),
+        //        caveCheeseLookup,
+        //        DensityFunctions.WeirdScaledSampler.RarityValueMapper.TYPE2
+        //    )
         //);
 
+        //Slightly wavy plains
+        //return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-2),
+        //    DensityFunctions.add(
+        //        DensityFunctions.mul(DensityFunctions.constant(0.22),
+        //            DensityFunctions.noise(continentLookup,0.12,0)),
+        //        DensityFunctions.add(
+        //            DensityFunctions.mul(DensityFunctions.constant(0.22),
+        //                DensityFunctions.noise(erosionLookup,0.18,0)),
+        //            DensityFunctions.add(
+        //                DensityFunctions.mul(DensityFunctions.constant(0.22),
+        //                    DensityFunctions.noise(ridgeLookup,0.35,0)),
+        //                DensityFunctions.mul(DensityFunctions.constant(0.5),
+        //                    DensityFunctions.noise(bigContinentLookup,1,5))
+        //            ))));
+
+        //plateau behavior, very good!
+        return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-2),
+            DensityFunctions.add(
+
+                //do crater stuff in here
+                DensityFunctions.add(
+                DensityFunctions.add(
+                DensityFunctions.add(
+                DensityFunctions.add(
+                DensityFunctions.add(
+                DensityFunctions.add(
+                DensityFunctions.add(
+                DensityFunctions.add(
+                    DensityFunctions.mul(DensityFunctions.constant(0.03),
+                        new CraterNoise(1960)),
+                    DensityFunctions.mul(DensityFunctions.constant(0.8),
+                        new CraterNoise(1700))),
+                    DensityFunctions.mul(DensityFunctions.constant(1),
+                        new CraterNoise(1000))),
+                    DensityFunctions.mul(DensityFunctions.constant(1),
+                            new CraterNoise(700))),
+                    DensityFunctions.mul(DensityFunctions.constant(1),
+                            new CraterNoise(500))),
+                    DensityFunctions.mul(DensityFunctions.constant(2),
+                        new CraterNoise(300))),
+                    DensityFunctions.mul(DensityFunctions.constant(2),
+                        new CraterNoise(150))),
+                    DensityFunctions.mul(DensityFunctions.constant(3),
+                        new CraterNoise(24))),
+                    DensityFunctions.mul(DensityFunctions.constant(3),
+                        new CraterNoise(20))),
+
+            DensityFunctions.add(
+
+                //actual terrain gen
+                DensityFunctions.mul(DensityFunctions.constant(0.22),
+                    DensityFunctions.noise(continentLookup,0.12,0)),
+                DensityFunctions.add(
+                    DensityFunctions.mul(DensityFunctions.constant(0.22),
+                        DensityFunctions.noise(erosionLookup,0.18,0)),
+                    DensityFunctions.add(
+                        DensityFunctions.mul(DensityFunctions.constant(0.22),
+                            DensityFunctions.noise(ridgeLookup,0.35,0)),
+                        DensityFunctions.mul(DensityFunctions.constant(0.5),
+                            DensityFunctions.noise(bigContinentLookup,1,5))
+                    )))));
+
+        //return DensityFunctions.add(
+        //        DensityFunctions.yClampedGradient(0,200,1,0),
+        //        new CraterNoise(24));
+
+        //Trying nether generation, broken
+        //return DensityFunctions.mul(DensityFunctions.constant(0.63),
+        //    DensityFunctions.max(DensityFunctions.constant(1),
+        //    DensityFunctions.min(DensityFunctions.constant(0),
+        //    DensityFunctions.interpolated(
+        //        DensityFunctions.blendDensity(
+        //            DensityFunctions.add(DensityFunctions.constant(2.5),
+        //            DensityFunctions.mul(
+        //                DensityFunctions.yClampedGradient(0,-8,1,24),
+        //                DensityFunctions.add(DensityFunctions.constant(-2.5),
+        //                    DensityFunctions.add(DensityFunctions.constant(1.2), //was 0.9375
+        //                    DensityFunctions.mul(
+        //                        DensityFunctions.yClampedGradient(5,104,0,250),
+        //                        DensityFunctions.noise(caveCheeseLookup,1,1)
+        //                    ))
+        //                )
+        //            ))
+        //        )
+        //    )))
+        //);
+    }
+
+    private static DensityFunction buildClouds(BootstapContext<DensityFunction> context) {
+        HolderGetter<NormalNoise.NoiseParameters> noiseLookup = context.lookup(Registries.NOISE);
+        Holder.Reference<NormalNoise.NoiseParameters> bigContinentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS_LARGE);
+        Holder.Reference<NormalNoise.NoiseParameters> continentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS);
+        Holder.Reference<NormalNoise.NoiseParameters> erosionLookup = noiseLookup.getOrThrow(Noises.EROSION);
+        Holder.Reference<NormalNoise.NoiseParameters> ridgeLookup = noiseLookup.getOrThrow(Noises.RIDGE);
+
+        return DensityFunctions.add(
+                  DensityFunctions.mul(DensityFunctions.constant(0.22),
+                        DensityFunctions.noise(continentLookup,0.12,0)),
+            DensityFunctions.add(
+                  DensityFunctions.mul(DensityFunctions.constant(0.22),
+                        DensityFunctions.noise(erosionLookup,0.18,0)),
+            DensityFunctions.add(
+                  DensityFunctions.mul(DensityFunctions.constant(0.22),
+                        DensityFunctions.noise(ridgeLookup,0.35,0)),
+            DensityFunctions.add(
+                  DensityFunctions.mul(DensityFunctions.constant(0.5),
+                        DensityFunctions.noise(bigContinentLookup,1,5)),
+                  DensityFunctions.mul(DensityFunctions.constant(2),
+                        DensityFunctions.noise(ridgeLookup,5))
+            ))));
     }
     //0 is air, 1 is solid
 
@@ -182,4 +300,8 @@ public class PlanetDimensions {
         context.register(CERES_STEM, asteroidStem);
         //...
     }
+
+    //public static DensityFunction weirdScaledSampler(DensityFunction DF, Holder<NormalNoise.NoiseParameters> p_208317_) {
+    //    return new DensityFunctions.WeirdScaledSampler(DF, new DensityFunction.NoiseHolder(p_208317_), "type_1");
+    //}
 }
