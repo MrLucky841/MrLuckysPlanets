@@ -21,6 +21,7 @@ import net.mrlucky841.mlplanets.block.ModBlocks;
 import net.mrlucky841.mlplanets.worldgen.biome.CeresChunkGenerator;
 import net.mrlucky841.mlplanets.worldgen.biome.SpaceBiomes;
 import net.mrlucky841.mlplanets.worldgen.surface.ModSurfaceRules;
+import org.valkyrienskies.core.impl.shadow.De;
 import shipwrights.genesis.worldgen.CraterNoise;
 //import shipwrights.genesis.worldgen.CraterNoise;
 
@@ -56,12 +57,12 @@ public class PlanetDimensions {
                 1.0, // coordinateScale
                 true, // bedWorks
                 false, // respawnAnchorWorks
-                0, // minY
-                256, // height
-                256, // logicalHeight
+                -64, // minY
+                384, // height
+                384, // logicalHeight
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 BuiltinDimensionTypes.OVERWORLD_EFFECTS, // effectsLocation
-                10.0f, // ambientLight
+                10.0f, // ambientLight //TODO, put to an appropriate value
                 new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)));
         //register other dim types here...
         //context.register(MARS_DIM_TYPE, new DimensionType( ...
@@ -69,7 +70,7 @@ public class PlanetDimensions {
 
     public static NoiseGeneratorSettings makeNoiseSettings(BootstapContext<NoiseGeneratorSettings> context) {
         //params: minY, maxY, noiseSizeHorz, noiseSizeVert
-        NoiseSettings noiseDims = NoiseSettings.create(0,256,2,2);
+        NoiseSettings noiseDims = NoiseSettings.create(-64,320,2,2);
         HolderGetter<DensityFunction> densityFunctions = context.lookup(Registries.DENSITY_FUNCTION);
         DensityFunction finalDensity = new DensityFunctions.HolderHolder(densityFunctions.getOrThrow(CRATER_DENSITY_FUNCTION));
         return new NoiseGeneratorSettings(
@@ -93,7 +94,7 @@ public class PlanetDimensions {
                     DensityFunctions.zero(),    //veinRidged
                     DensityFunctions.zero()     //veinGap
             ),
-            //VV could also ues: SurfaceRules.sequence(put all sequences in here)
+            //VV could also use: SurfaceRules.sequence(put all sequences in here)
             ModSurfaceRules.makeRockRules(ModSurfaceRules.REGOLITH,ModSurfaceRules.CHONDRITE,ModSurfaceRules.VENUSIAN_OBSIDIAN),
             List.of(), //list of biome climate parameterPoints "spawnTarget"
             0,
@@ -109,9 +110,7 @@ public class PlanetDimensions {
         //...
     }
 
-    //called by .add(Registries.DENSITY_FUNCTION, PlanetDimensions::bootstrapDensityFunction) in the DataProvider
     public static void bootstrapDensityFunction(BootstapContext<DensityFunction> context) {
-        //context.register(CERES_DENSITY_FUNCTION, new CeresDensityFunction(50,10));
         context.register(CRATER_DENSITY_FUNCTION, buildCeres(context));
         //context.register(GAS_GIANT_DENSITY_FUNCTION, buildGasGiant(context));
         //...
@@ -145,43 +144,28 @@ public class PlanetDimensions {
         Holder.Reference<NormalNoise.NoiseParameters> continentLookup = noiseLookup.getOrThrow(Noises.CONTINENTALNESS);
         Holder.Reference<NormalNoise.NoiseParameters> erosionLookup = noiseLookup.getOrThrow(Noises.EROSION);
         Holder.Reference<NormalNoise.NoiseParameters> ridgeLookup = noiseLookup.getOrThrow(Noises.RIDGE);
-        Holder.Reference<NormalNoise.NoiseParameters> caveCheeseLookup = noiseLookup.getOrThrow(Noises.CAVE_CHEESE);
 
-        //flat noise for main ridges and plateaus
-        //large basin craters
-        //mild noise for bumps
-        //pockmark craters
-
-        //Example of custom density function
-        //return new CraterDensityFunction(1); //Radius of bigg ceres craters is 70-100km
-
-        //WeirdScaledSampler example (doesn't work)
-        //return DensityFunctions.mul(
-        //    DensityFunctions.yClampedGradient(0,220,1,-3),
-        //    DensityFunctions.weirdScaledSampler(
-        //        DensityFunctions.noise(caveCheeseLookup),
-        //        caveCheeseLookup,
-        //        DensityFunctions.WeirdScaledSampler.RarityValueMapper.TYPE2
-        //    )
+        //playing with subterranean caves without using carvers
+        //return DensityFunctions.add(DensityFunctions.yClampedGradient(0,40,5,0),
+        //    DensityFunctions.noise(bigContinentLookup,10,1)
         //);
 
-        //Slightly wavy plains
-        //return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-2),
-        //    DensityFunctions.add(
-        //        DensityFunctions.mul(DensityFunctions.constant(0.22),
-        //            DensityFunctions.noise(continentLookup,0.12,0)),
-        //        DensityFunctions.add(
-        //            DensityFunctions.mul(DensityFunctions.constant(0.22),
-        //                DensityFunctions.noise(erosionLookup,0.18,0)),
-        //            DensityFunctions.add(
-        //                DensityFunctions.mul(DensityFunctions.constant(0.22),
-        //                    DensityFunctions.noise(ridgeLookup,0.35,0)),
-        //                DensityFunctions.mul(DensityFunctions.constant(0.5),
-        //                    DensityFunctions.noise(bigContinentLookup,1,5))
-        //            ))));
+        //testing mega continents
+        //return DensityFunctions.add(
+        //        DensityFunctions.yClampedGradient(0,110,1,-2),
+        //        DensityFunctions.mul(
+        //            DensityFunctions.noise(bigContinentLookup,10,1),
+        //            DensityFunctions.yClampedGradient(0,220,1,-2)
+        //));
 
-        //plateau behavior, very good!
-        return DensityFunctions.add(DensityFunctions.yClampedGradient(0,220,1,-2),
+        return DensityFunctions.add(
+
+                //Do plateau stuff here
+                DensityFunctions.add(
+                    DensityFunctions.yClampedGradient(-64,0,5,0),
+                    DensityFunctions.yClampedGradient(0,220,1,-2)),
+
+
             DensityFunctions.add(
 
                 //do crater stuff in here
@@ -193,16 +177,16 @@ public class PlanetDimensions {
                 DensityFunctions.add(
                 DensityFunctions.add(
                 DensityFunctions.add(
-                    DensityFunctions.mul(DensityFunctions.constant(0.03),
+                    DensityFunctions.mul(DensityFunctions.constant(0.04),
                         new CraterNoise(1960)),
                     DensityFunctions.mul(DensityFunctions.constant(0.8),
                         new CraterNoise(1700))),
                     DensityFunctions.mul(DensityFunctions.constant(1),
                         new CraterNoise(1000))),
                     DensityFunctions.mul(DensityFunctions.constant(1),
-                            new CraterNoise(700))),
+                        new CraterNoise(700))),
                     DensityFunctions.mul(DensityFunctions.constant(1),
-                            new CraterNoise(500))),
+                        new CraterNoise(500))),
                     DensityFunctions.mul(DensityFunctions.constant(2),
                         new CraterNoise(300))),
                     DensityFunctions.mul(DensityFunctions.constant(2),
@@ -214,7 +198,7 @@ public class PlanetDimensions {
 
             DensityFunctions.add(
 
-                //actual terrain gen
+                //traditional terrain gen
                 DensityFunctions.mul(DensityFunctions.constant(0.22),
                     DensityFunctions.noise(continentLookup,0.12,0)),
                 DensityFunctions.add(
@@ -225,11 +209,8 @@ public class PlanetDimensions {
                             DensityFunctions.noise(ridgeLookup,0.35,0)),
                         DensityFunctions.mul(DensityFunctions.constant(0.5),
                             DensityFunctions.noise(bigContinentLookup,1,5))
-                    )))));
-
-        //return DensityFunctions.add(
-        //        DensityFunctions.yClampedGradient(0,200,1,0),
-        //        new CraterNoise(24));
+                )))
+        ));
 
         //Trying nether generation, broken
         //return DensityFunctions.mul(DensityFunctions.constant(0.63),

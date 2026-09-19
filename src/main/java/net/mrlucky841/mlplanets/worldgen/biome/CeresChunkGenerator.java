@@ -33,7 +33,6 @@ public class CeresChunkGenerator extends NoiseBasedChunkGenerator {
         });
         NoiseGeneratorSettings noisegeneratorsettings = this.generatorSettings().value();
         randomState.surfaceSystem().buildSurface(randomState, biomeManager, biomes, noisegeneratorsettings.useLegacyRandomSource(), generationContext, chunkAccess, noisechunk, noisegeneratorsettings.surfaceRule());
-        //TODO: This lobotomy did not change issue. Figure out what this does
     }
 
     @Override
